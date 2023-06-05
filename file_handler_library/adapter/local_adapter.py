@@ -1,5 +1,6 @@
 from typing import BinaryIO
 
+from cloudstorage import Blob
 from cloudstorage.exceptions import NotFoundError
 
 from file_handler_library.config import StorageSettings
@@ -21,7 +22,7 @@ class LocalAdapter(FileHandlerAbstract):
         except Exception as e:
             return False
 
-    def get_file(self, container_name: str, filename: str):
+    def get_file(self, container_name: str, filename: str) -> str | Blob:
         if self.is_exist(container_name, filename):
             blob = self.__get_container(container_name).get_blob(blob_name=filename)
             return f"{self.storage.base_path}/{blob.path}"

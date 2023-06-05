@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import BinaryIO
 
+from cloudstorage import Blob
+
 
 class FileHandlerAbstract(ABC):
     @abstractmethod
@@ -16,5 +18,5 @@ class FileHandlerAbstract(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_file(self, container_name: str, filename: str):
+    def get_file(self, container_name: str, filename: str) -> str | Blob:
         raise NotImplementedError

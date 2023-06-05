@@ -7,6 +7,7 @@ class StorageSettings(BaseSettings):
     secret: str
     app_env: str
     storage_url: str | None
+    storage_region: str | None
 
     class Config:
         env_file = '.env'

@@ -5,13 +5,14 @@ from cloudstorage.exceptions import NotFoundError
 from file_handler_library.config import StorageSettings
 from file_handler_library.driver_loader import DriverLoader
 from file_handler_library.exception.storage_exception import FileNotFoundException
+from file_handler_library.file_storage_type import FileStorageType
 from file_handler_library.handler.file_handler_abstract import FileHandlerAbstract
 
 
 class S3Adapter(FileHandlerAbstract):
     def __init__(self):
         self.settings: StorageSettings = StorageSettings()
-        self.driver = DriverLoader().get_driver()
+        self.driver = DriverLoader().get_driver(FileStorageType.S3.value)
         self.storage = self.driver(key=self.settings.key, secret=self.settings.secret, region=self.settings.storage_region)
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):

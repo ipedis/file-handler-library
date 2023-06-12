@@ -9,8 +9,8 @@ class DriverLoader:
     def __init__(self):
         self.settings: StorageSettings = StorageSettings()
 
-    def get_driver(self):
-        if not FileStorageType.is_storage_supported(self.settings.storage_type):
-            raise InvalidStorageTypeException(f"We do not support {self.settings.storage_type} yet.")
+    def get_driver(self, driver_name: str):
+        if not FileStorageType.is_storage_supported(driver_name):
+            raise InvalidStorageTypeException(f"We do not support {driver_name} yet.")
 
-        return get_driver_by_name(self.settings.storage_type)
+        return get_driver_by_name(driver_name)

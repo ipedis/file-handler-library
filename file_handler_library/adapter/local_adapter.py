@@ -1,3 +1,4 @@
+import os
 from typing import BinaryIO
 
 from cloudstorage import Blob
@@ -18,7 +19,17 @@ class LocalAdapter(FileHandlerAbstract):
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:
-            self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
+            if isinstance(file, str):
+                # create directory
+                self.__get_container(container_name)
+
+                file_path = f"{self.storage.base_path}/{container_name}/{filename}"
+                with open(file_path, "w") as blob_file:
+                    print(file, file=blob_file)
+                # Disable execute mode on file
+                os.chmod(file_path, int("664", 8))
+            else:
+                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
             return True
         except Exception as e:
             return False

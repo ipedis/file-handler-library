@@ -15,6 +15,9 @@ class S3Adapter(FileHandlerAbstract):
         self.driver = DriverLoader().get_driver(FileStorageType.S3.value)
         self.storage = self.driver(key=self.settings.key, secret=self.settings.secret, region=self.settings.storage_region)
 
+    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
+        raise NotImplementedError
+
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:
             self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)

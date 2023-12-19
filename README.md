@@ -34,3 +34,8 @@ STORAGE_REGION=aws-region
 ```
 
 > More info to be added later.
+
+###### TODOs
+
+- Create test cases.
+- Remove cloudstorage dependency and use native sdks.

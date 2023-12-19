@@ -19,6 +19,9 @@ class MinioAdapter(FileHandlerAbstract):
         self.driver = DriverLoader().get_driver(FileStorageType.MINIO.value)
         self.storage = self.driver(endpoint="127.0.0.1:9000", key=self.settings.key, secret=self.settings.secret, region='us-east-1', secure=False)
 
+    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
+        raise NotImplementedError
+
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:
             self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)

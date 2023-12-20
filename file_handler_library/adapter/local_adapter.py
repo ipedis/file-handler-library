@@ -1,4 +1,5 @@
 import os
+import shutil
 from typing import BinaryIO
 
 from cloudstorage import Blob
@@ -17,8 +18,10 @@ class LocalAdapter(FileHandlerAbstract):
         self.driver = DriverLoader().get_driver(FileStorageType.LOCAL.value)
         self.storage = self.driver(key=self.settings.local_storage_base, secret=self.settings.secret)
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
-        raise NotImplementedError
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
+        if self.is_exist(container_name, filename):
+            blob = self.__get_container(container_name).get_blob(blob_name=filename)
+            shutil.copyfile(blob.path, local_file_path)
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:
@@ -38,10 +41,11 @@ class LocalAdapter(FileHandlerAbstract):
             return False
 
     def get_file(self, container_name: str, filename: str) -> str | Blob:
-        if self.is_exist(container_name, filename):
-            blob = self.__get_container(container_name).get_blob(blob_name=filename)
-            return f"{self.storage.base_path}/{blob.path}"
-        raise FileNotFoundException(f"File {filename} not found.")
+        raise NotImplementedError
+        # if self.is_exist(container_name, filename):
+        #     blob = self.__get_container(container_name).get_blob(blob_name=filename)
+        #     return f"{self.storage.base_path}/{blob.path}"
+        # raise FileNotFoundException(f"File {filename} not found.")
 
     def delete_file(self, container_name: str, filename: str):
         if not self.is_exist(container_name, filename):

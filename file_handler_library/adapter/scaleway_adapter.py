@@ -31,14 +31,9 @@ class ScalewayAdapter(FileHandlerAbstract):
             return False
 
     def get_file(self, container_name: str, filename: str):
-        try:
-            self.__get_container(container_name=container_name)
-            if self.is_exist(container_name, filename):
-                return self.storage.download_file(container_name, filename, filename)
-        except Exception:
-            raise FileNotFoundException(f"File {filename} not found.")
+        raise NotImplementedError
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
         try:
             with open(local_file_path, 'wb') as f:
                 self.storage.download_fileobj(container_name, filename, f)

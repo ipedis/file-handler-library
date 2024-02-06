@@ -17,7 +17,7 @@ class MinioAdapter(FileHandlerAbstract):
         if self.settings.app_env != 'dev':
             raise InvalidStorageTypeException("Minio should only be used in dev mode.")
         self.driver = DriverLoader().get_driver(FileStorageType.MINIO.value)
-        self.storage = self.driver(endpoint="127.0.0.1:9000", key=self.settings.key, secret=self.settings.secret, region='us-east-1', secure=False)
+        self.storage = self.driver(endpoint=self.settings.storage_url, key=self.settings.key, secret=self.settings.secret, region=self.settings.storage_region, secure=False)
 
     def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
         raise NotImplementedError

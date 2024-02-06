@@ -19,8 +19,10 @@ class MinioAdapter(FileHandlerAbstract):
         self.driver = DriverLoader().get_driver(FileStorageType.MINIO.value)
         self.storage = self.driver(endpoint=self.settings.storage_url, key=self.settings.key, secret=self.settings.secret, region=self.settings.storage_region, secure=False)
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
-        raise NotImplementedError
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
+        blob = self.get_file(container_name, filename)
+        with open(local_file_path, 'wb'):
+            blob.download(local_file_path)
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:

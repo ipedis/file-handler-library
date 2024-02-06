@@ -1,4 +1,5 @@
 import os
+import shutil
 from typing import BinaryIO
 
 from cloudstorage import Blob
@@ -17,8 +18,9 @@ class LocalAdapter(FileHandlerAbstract):
         self.driver = DriverLoader().get_driver(FileStorageType.LOCAL.value)
         self.storage = self.driver(key=self.settings.local_storage_base, secret=self.settings.secret)
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
-        raise NotImplementedError
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
+        remote_file_path = self.get_file(container_name, filename)
+        shutil.copyfile(remote_file_path, local_file_path)
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
         try:

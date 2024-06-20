@@ -49,7 +49,7 @@ class S3Adapter(FileHandlerAbstract):
             return False
 
     def get_file_link(self, container_name: str, file_path: str) -> str:
-        raise NotImplementedError
+        return ''
 
     def __get_container(self, container_name: str):
         try:

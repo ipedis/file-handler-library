@@ -22,7 +22,7 @@ class LocalAdapter(FileHandlerAbstract):
         remote_file_path = self.get_file(container_name, filename)
         shutil.copyfile(remote_file_path, local_file_path)
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
+    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
             if isinstance(file, str):
                 # create directory
@@ -58,6 +58,9 @@ class LocalAdapter(FileHandlerAbstract):
             return True
         except NotFoundError or FileNotFoundError:
             return False
+
+    def get_file_link(self, container_name: str, file_path: str) -> str:
+        raise NotImplementedError
 
     def __get_container(self, container_name: str):
         try:

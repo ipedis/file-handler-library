@@ -22,10 +22,13 @@ class ScalewayAdapter(FileHandlerAbstract):
         except (NoCredentialsError, PartialCredentialsError) as e:
             raise Exception("Scaleway credentials are invalid. Please check and try again.") from e
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
+    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
             self.__get_container(container_name=container_name)
-            self.storage.upload_file(file, container_name, filename)
+            if is_public:
+                self.storage.upload_file(file, container_name, filename, extra_args={'ACL': 'public-read'})
+            else:
+                self.storage.upload_file(file, container_name, filename)
             return True
         except Exception:
             return False
@@ -38,7 +41,7 @@ class ScalewayAdapter(FileHandlerAbstract):
         except Exception:
             raise FileNotFoundException(f"File {filename} not found.")
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
         try:
             with open(local_file_path, 'wb') as f:
                 self.storage.download_fileobj(container_name, filename, f)
@@ -60,6 +63,14 @@ class ScalewayAdapter(FileHandlerAbstract):
             return True
         except self.storage.exceptions.NoSuchKey:
             return False
+
+    def get_file_link(self, container_name: str, file_path: str) -> str:
+
+        return 'https://%s.%s/%s'.format(
+            container_name,
+            re.sub(r'^https?://', '', self.settings.storage_url),
+            file_path
+        )
 
     def __get_container(self, container_name: str) -> str:
         response = self.storage.list_buckets()

@@ -27,10 +27,7 @@ class MinioAdapter(FileHandlerAbstract):
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
-            if is_public:
-                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename, acl='public-read')
-            else:
-                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
+            self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
             return True
         except Exception as e:
             return False

@@ -1,5 +1,5 @@
 from typing import BinaryIO
-
+import re
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 

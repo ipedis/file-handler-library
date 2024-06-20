@@ -66,7 +66,7 @@ class ScalewayAdapter(FileHandlerAbstract):
 
     def get_file_link(self, container_name: str, file_path: str) -> str:
 
-        return 'https://%s.%s/%s'.format(
+        return 'https://{}.{}/{}'.format(
             container_name,
             re.sub(r'^https?://', '', self.settings.storage_url),
             file_path

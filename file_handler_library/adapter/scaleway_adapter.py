@@ -26,7 +26,7 @@ class ScalewayAdapter(FileHandlerAbstract):
         try:
             self.__get_container(container_name=container_name)
             if is_public:
-                self.storage.upload_file(file, container_name, filename, extra_args={'ACL': 'public-read'})
+                self.storage.upload_file(file, container_name, filename, ACL='public-read')
             else:
                 self.storage.upload_file(file, container_name, filename)
             return True

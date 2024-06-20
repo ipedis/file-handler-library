@@ -30,8 +30,8 @@ class ScalewayAdapter(FileHandlerAbstract):
             else:
                 self.storage.upload_file(file, container_name, filename)
             return True
-        except Exception:
-            return False
+        except Exception as e:
+            raise e
 
     def get_file(self, container_name: str, filename: str):
         try:

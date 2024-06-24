@@ -22,7 +22,7 @@ class LocalAdapter(FileHandlerAbstract):
         remote_file_path = self.get_file(container_name, filename)
         shutil.copyfile(remote_file_path, local_file_path)
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
+    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
             if isinstance(file, str):
                 # create directory
@@ -37,7 +37,7 @@ class LocalAdapter(FileHandlerAbstract):
                 self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
             return True
         except Exception as e:
-            return False
+            return e
 
     def get_file(self, container_name: str, filename: str) -> str | Blob:
         if self.is_exist(container_name, filename):
@@ -58,6 +58,9 @@ class LocalAdapter(FileHandlerAbstract):
             return True
         except NotFoundError or FileNotFoundError:
             return False
+
+    def get_file_link(self, container_name: str, file_path: str) -> str:
+        return file_path
 
     def __get_container(self, container_name: str):
         try:

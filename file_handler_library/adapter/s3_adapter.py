@@ -13,17 +13,21 @@ class S3Adapter(FileHandlerAbstract):
     def __init__(self):
         self.settings: StorageSettings = StorageSettings()
         self.driver = DriverLoader().get_driver(FileStorageType.S3.value)
-        self.storage = self.driver(key=self.settings.key, secret=self.settings.secret, region=self.settings.storage_region)
+        self.storage = self.driver(key=self.settings.key, secret=self.settings.secret,
+                                   region=self.settings.storage_region)
 
-    def get_file_obj(self, container_name: str, filename: str, local_file_path:str):
+    def get_file_obj(self, container_name: str, filename: str, local_file_path: str):
         raise NotImplementedError
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str):
+    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
-            self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
+            if is_public:
+                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename, acl='public-read')
+            else:
+                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
             return True
         except Exception as e:
-            return False
+            raise e
 
     def get_file(self, container_name: str, filename: str):
         if self.is_exist(container_name, filename):
@@ -43,6 +47,10 @@ class S3Adapter(FileHandlerAbstract):
             return True
         except NotFoundError or FileNotFoundError:
             return False
+
+    def get_file_link(self, container_name: str, file_path: str) -> str:
+        blob = self.__get_container(container_name).get_blob(file_path)
+        return self.storage.blob_cdn_url(blob=blob)
 
     def __get_container(self, container_name: str):
         try:

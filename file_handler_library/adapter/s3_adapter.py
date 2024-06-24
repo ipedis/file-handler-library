@@ -21,10 +21,13 @@ class S3Adapter(FileHandlerAbstract):
 
     def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
         try:
-            self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
+            if is_public:
+                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename, acl='public-read')
+            else:
+                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
             return True
         except Exception as e:
-            return False
+            raise e
 
     def get_file(self, container_name: str, filename: str):
         if self.is_exist(container_name, filename):
@@ -46,7 +49,8 @@ class S3Adapter(FileHandlerAbstract):
             return False
 
     def get_file_link(self, container_name: str, file_path: str) -> str:
-        return ''
+        blob = self.__get_container(container_name).get_blob(file_path)
+        return self.storage.blob_cdn_url(blob=blob)
 
     def __get_container(self, container_name: str):
         try:

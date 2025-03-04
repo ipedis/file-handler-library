@@ -1,36 +1,36 @@
 import os.path
+import uuid
 
 from dotenv import load_dotenv
 
+from demo.file_handler import FileHandler
 from file_handler_library.adapter_finder import AdapterFinder
 
 
-
+# this shows the demo of how to use the file_handler_library
 def main():
     load_dotenv()
-
-    # Create an instance of AdapterFinder
-    adapter_finder = AdapterFinder()
-
-    # Get the appropriate adapter based on the storage type
-    adapter = adapter_finder.get_adapter()
-
-    # Perform some basic operations using the adapter
-    container_name = "test-bucket"
-    filename = "sample.txt"
-    file_content = os.path.abspath('demo/storage/sample.txt')
-
-    # Upload a file
-    adapter.create_file(container_name, file_content, filename, is_public=True)
-    print(f"File '{filename}' uploaded to '{container_name}'.")
-
-    # Check if the file exists
-    if adapter.is_exist(container_name, filename):
-        print(f"File '{filename}' exists in '{container_name}'.")
-
-    # Delete the file
-    # adapter.delete_file(container_name, filename)
-    # print(f"File '{filename}' deleted from '{container_name}'.")
+    file_handler = FileHandler()
+    container_name = "text"
+    filename = f"{uuid.uuid4()}.txt"
+    upload_file = "demo/doc/sample.txt"
+    # create file
+    full_path = os.path.abspath(upload_file)
+    if file_handler.is_local_storage():
+        with open(full_path, "rb") as file:
+            file_handler.create_file(container_name, file, filename)
+            file.close()
+    else:
+        file_handler.create_file(container_name, full_path, filename)
+    # check if file exists
+    if file_handler.is_exist(container_name, filename):
+        print("File uploaded successfully. Now deleting the file.")
+        # delete file
+        # file_handler.delete_file(container_name, filename)
+        # following should print False
+        print(f"File deleted. Checking if file exists: {file_handler.is_exist(container_name, filename)}")
+    else:
+        print("File upload failed.")
 
 
 if __name__ == "__main__":

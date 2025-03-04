@@ -4,7 +4,9 @@ from typing import BinaryIO
 
 
 from file_handler_library.config import StorageSettings
-from file_handler_library.exception.storage_exception import FileNotFoundException, NotADirectoryException
+from file_handler_library.exception.storage_exception import FileNotFoundException, NotADirectoryException, \
+    InvalidStorageTypeException
+from file_handler_library.file_storage_type import FileStorageType
 from file_handler_library.handler.file_handler_abstract import FileHandlerAbstract
 
 
@@ -12,6 +14,8 @@ class LocalAdapter(FileHandlerAbstract):
     def __init__(self):
         self.settings: StorageSettings = StorageSettings()
         self.root_dir = self.settings.local_storage_base
+        if (self.root_dir is None or self.root_dir == "") and FileStorageType.LOCAL.value == self.settings.storage_type:
+            raise InvalidStorageTypeException(message="Please set local storage base path.")
         try:
             if not os.path.exists(self.root_dir):
                 os.makedirs(self.root_dir)
@@ -24,34 +28,30 @@ class LocalAdapter(FileHandlerAbstract):
         remote_file_path = self.get_file(container_name, filename)
         shutil.copyfile(remote_file_path, local_file_path)
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
+    def create_file(self, container_name: str, file: str, filename: str, is_public: bool = False):
         try:
-            if isinstance(file, str):
-                # create directory
-                self.__get_container(container_name)
+            # create directory
+            self.__get_container(container_name)
 
-                file_path = f"{self.storage.root_dir}/{container_name}/{filename}"
-                with open(file_path, "w") as blob_file:
-                    print(file, file=blob_file)
-                # Disable execute mode on file
-                os.chmod(file_path, int("664", 8))
-            else:
-                self.__get_container(container_name).upload_blob(filename=file, blob_name=filename)
+            file_path = f"{self.root_dir}/{container_name}/{filename}"
+            with open(file_path, "w") as storage_file:
+                print(file, file=storage_file)
+            # Disable execute mode on file
+            os.chmod(file_path, int("664", 8))
             return True
         except Exception as e:
+            print(e)
             return e
 
     def get_file(self, container_name: str, filename: str) -> str:
         if self.is_exist(container_name, filename):
-            blob = self.__get_container(container_name).get_blob(blob_name=filename)
-            return f"{self.storage.root_dir}/{blob.path}"
+            return f"{self.__get_container(container_name)}/{filename}"
         raise FileNotFoundException(f"File {filename} not found.")
 
     def delete_file(self, container_name: str, filename: str):
         if not self.is_exist(container_name, filename):
             return True
-        blob = self.__get_container(container_name).get_blob(blob_name=filename)
-        blob.delete()
+        os.remove(f"{self.__get_container(container_name)}/{filename}")
         return True
 
     def is_exist(self, container_name: str, filename: str):

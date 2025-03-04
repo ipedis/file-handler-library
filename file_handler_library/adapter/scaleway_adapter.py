@@ -50,7 +50,6 @@ class ScalewayAdapter(FileHandlerAbstract):
 
     def delete_file(self, container_name: str, filename: str):
         try:
-            self.__get_container(container_name=container_name)
             self.storage.delete_object(Bucket=container_name, Key=filename)
             return True
         except Exception:
@@ -61,8 +60,14 @@ class ScalewayAdapter(FileHandlerAbstract):
             self.__get_container(container_name=container_name)
             self.storage.head_object(Bucket=container_name, Key=filename)
             return True
+        # boto core has a buggy behavior. It throws different exception based on request type head_object or get_object
+        # check this for more details https://github.com/boto/boto3/issues/2442
         except self.storage.exceptions.NoSuchKey:
             return False
+        except self.storage.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                return False
+            raise e
 
     def get_file_link(self, container_name: str, file_path: str) -> str:
 

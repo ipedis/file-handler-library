@@ -32,6 +32,7 @@ STORAGE_REGION=aws-region
 
 ###### Demo
 You can build and run docker-compose file to see the demo of the package. The docker-compose file is available in the root directory of the project.
+You will need to create minio access key and secret key and add it to the .env file.
 
 ```bash
 docker-compose up

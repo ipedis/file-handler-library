@@ -3,3 +3,5 @@
 __pycache__/
 demo/storage/*
 !demo/storage/.gitkeep
+tests/storage/*
+!tests/storage/.gitkeep

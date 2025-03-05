@@ -4,7 +4,6 @@ import uuid
 from dotenv import load_dotenv
 
 from demo.file_handler import FileHandler
-from file_handler_library.adapter_finder import AdapterFinder
 
 
 # this shows the demo of how to use the file_handler_library

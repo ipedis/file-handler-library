@@ -34,8 +34,7 @@ class LocalAdapter(FileHandlerAbstract):
             self.__get_container(container_name)
 
             file_path = f"{self.root_dir}/{container_name}/{filename}"
-            with open(file_path, "w") as storage_file:
-                print(file, file=storage_file)
+            shutil.copyfile(file, file_path)
             # Disable execute mode on file
             os.chmod(file_path, int("664", 8))
             return True

@@ -8,12 +8,12 @@ Requires Python >= 3.11. Add it as a git dependency of your project:
 
 ```toml
 # Poetry
-file-handler-library = {git = "git@github.com:docaxess/file-handler-library.git", rev = "v2.0.0"}
+file-handler-library = {git = "git@github.com:ipedis/file-handler-library.git", rev = "v2.0.0"}
 ```
 
 ```bash
 # uv
-uv add "file-handler-library @ git+ssh://git@github.com/docaxess/file-handler-library.git@v2.0.0"
+uv add "file-handler-library @ git+ssh://git@github.com/ipedis/file-handler-library.git@v2.0.0"
 ```
 
 ## Setup

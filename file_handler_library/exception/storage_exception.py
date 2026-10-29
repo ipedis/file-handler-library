@@ -17,3 +17,10 @@ class NotADirectoryException(Exception):
         if message is None:
             message = 'Given path is not a directory.'
         super().__init__(message)
+
+
+class InvalidPathException(Exception):
+    def __init__(self, message: str | None = None):
+        if message is None:
+            message = 'Given path is outside of the storage root.'
+        super().__init__(message)

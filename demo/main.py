@@ -25,7 +25,7 @@ def main():
     if file_handler.is_exist(container_name, filename):
         print("File uploaded successfully. Now deleting the file.")
         # delete file
-        # file_handler.delete_file(container_name, filename)
+        file_handler.delete_file(container_name, filename)
         # following should print False
         print(f"File deleted. Checking if file exists: {file_handler.is_exist(container_name, filename)}")
     else:

@@ -1,40 +1,25 @@
-#!/bin/bash
 services:
-  minio:
-    image: quay.io/minio/minio
-    volumes:
-      - "minio_data:/data"
+  # S3-compatible server for the demo (MinIO community images are no longer published)
+  s3:
+    image: motoserver/moto:5.2.5
     ports:
-      - 9000:9000
-      - 9001:9001
-    environment:
-      MINIO_ROOT_USER: 'user'
-      MINIO_ROOT_PASSWORD: 'password'
-      MINIO_ADDRESS: ':9000'
-      MINIO_CONSOLE_ADDRESS: ':9001'
-    command: [ "minio", "server", "/data" ]
+      - "5000:5000"
     networks:
       - file-handler-demo
 
   handler-app:
-    platform: linux/amd64
     build:
       context: .
       dockerfile: docker/Dockerfile
     container_name: handler-app
-    ports:
-      - "8000:8000"
-    command: [ "dev" ]
+    env_file: demo/.env
     networks:
       - file-handler-demo
-    restart: unless-stopped
     depends_on:
-      - minio
+      - s3
     volumes:
       - "./:/app"
 
 networks:
-    file-handler-demo:
-        driver: bridge
-volumes:
-  minio_data:
+  file-handler-demo:
+    driver: bridge

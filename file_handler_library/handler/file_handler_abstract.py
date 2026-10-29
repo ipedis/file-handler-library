@@ -16,7 +16,7 @@ class FileHandlerAbstract(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_file(self, container_name: str, filename: str):
+    def get_file(self, container_name: str, filename: str) -> str:
         raise NotImplementedError
 
     @abstractmethod

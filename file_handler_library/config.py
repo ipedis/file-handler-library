@@ -8,5 +8,5 @@ class StorageSettings(BaseSettings):
     key: str
     secret: str
     app_env: str
-    storage_url: str | None
-    storage_region: str | None
+    storage_url: str | None = None
+    storage_region: str | None = None

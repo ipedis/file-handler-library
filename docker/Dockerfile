@@ -1,23 +1,24 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.11.18-slim-trixie@sha256:ffe4b0c76963e64f05484d74dbb3f67fad1effcf3c5c22c2235f0fafc8a9c98f
 
-# Set the working directory in the container
+COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /bin/uv
+
+# Keep the virtualenv outside /app: docker-compose bind-mounts the project over /app.
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    PYTHONPATH=/app
+
 WORKDIR /app
 
-# Copy the pyproject.toml and poetry.lock files to the working directory
-COPY pyproject.toml poetry.lock /app/
+# Install the locked dependencies first to benefit from layer caching
+COPY pyproject.toml uv.lock README.md /app/
+RUN uv sync --locked --no-install-project
 
-# Install Poetry
-RUN pip install poetry
-
-# Install the project dependencies
-RUN poetry install --no-root
-
-# Copy the rest of the application code to the working directory
 COPY . /app
 COPY demo/.env /app/.env
+RUN uv sync --locked
 
-ENV PYTHONPATH=/app
+RUN useradd --create-home --uid 1000 app && chown -R app:app /app /opt/venv
+USER app
 
-# Set the entry point for the container
-ENTRYPOINT ["poetry", "run", "python", "demo/main.py"]
+ENTRYPOINT ["/opt/venv/bin/python", "demo/main.py"]

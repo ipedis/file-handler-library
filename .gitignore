@@ -4,3 +4,5 @@ __pycache__/
 demo/storage/*
 !demo/storage/.gitkeep
 .venv/
+CLAUDE.md
+.claude/

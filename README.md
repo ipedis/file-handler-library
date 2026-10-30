@@ -70,3 +70,7 @@ uv run pip-audit         # check dependencies for known vulnerabilities
 - `create_file` accepts a binary stream on S3 too (`upload_fileobj`).
 - `STORAGE_URL` and `STORAGE_REGION` are optional.
 - The library no longer installs `pytest`, `pytest-env`, `poetry-audit-plugin`, `filelock`, `itsdangerous` or `xattr`. If a project used one of them, it must declare it itself.
+
+## License
+
+Apache License 2.0, see [LICENSE](LICENSE).

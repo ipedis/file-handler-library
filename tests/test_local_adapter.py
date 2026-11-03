@@ -24,6 +24,21 @@ def test_create_file_from_path(adapter, source_file):
     assert os.stat(adapter.get_file(CONTAINER, FILENAME)).st_mode & 0o777 == 0o664
 
 
+def test_create_file_from_pathlike(adapter, source_file):
+    # pathlib.Path sources were accepted in v1 and are passed by consumers (pdf-json-api).
+    assert adapter.create_file(CONTAINER, source_file, FILENAME) is True
+
+    with open(adapter.get_file(CONTAINER, FILENAME)) as f:
+        assert f.read() == "Hello, world!"
+    assert os.stat(adapter.get_file(CONTAINER, FILENAME)).st_mode & 0o777 == 0o664
+
+
+def test_create_file_from_pathlike_still_rejects_path_traversal(adapter, source_file, tmp_path):
+    with pytest.raises(InvalidPathException):
+        adapter.create_file("../outside", source_file, FILENAME)
+    assert not (tmp_path / "outside").exists()
+
+
 def test_create_file_from_binary_stream(adapter, source_file):
     with open(source_file, "rb") as stream:
         adapter.create_file(CONTAINER, stream, FILENAME)

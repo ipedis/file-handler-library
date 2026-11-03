@@ -24,11 +24,11 @@ class LocalAdapter(FileHandlerAbstract):
         remote_file_path = self.get_file(container_name, filename)
         shutil.copyfile(remote_file_path, local_file_path)
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
+    def create_file(self, container_name: str, file: BinaryIO | str | os.PathLike, filename: str, is_public: bool = False):
         file_path = self.__resolve_path(container_name, filename)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        if isinstance(file, str):
-            shutil.copyfile(file, file_path)
+        if isinstance(file, (str, os.PathLike)):
+            shutil.copyfile(os.fspath(file), file_path)
         else:
             with open(file_path, "wb") as storage_file:
                 shutil.copyfileobj(file, storage_file)

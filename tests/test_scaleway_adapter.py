@@ -24,6 +24,15 @@ def test_create_file_creates_missing_bucket(adapter, source_file):
     assert BUCKET in [b["Name"] for b in adapter.storage.list_buckets()["Buckets"]]
 
 
+def test_create_file_from_pathlike(adapter, source_file, tmp_path):
+    # pathlib.Path sources were accepted in v1 and are passed by consumers (pdf-json-api).
+    assert adapter.create_file(BUCKET, source_file, KEY) is True
+
+    destination = tmp_path / "downloaded.txt"
+    adapter.get_file_obj(BUCKET, KEY, str(destination))
+    assert destination.read_text() == "Hello, world!"
+
+
 def test_create_file_from_binary_stream(adapter, source_file, tmp_path):
     with open(source_file, "rb") as stream:
         adapter.create_file(BUCKET, stream, KEY)

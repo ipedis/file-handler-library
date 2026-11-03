@@ -1,10 +1,11 @@
+import os
 from abc import ABC, abstractmethod
 from typing import BinaryIO
 
 
 class FileHandlerAbstract(ABC):
     @abstractmethod
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
+    def create_file(self, container_name: str, file: BinaryIO | str | os.PathLike, filename: str, is_public: bool = False):
         raise NotImplementedError
 
     @abstractmethod

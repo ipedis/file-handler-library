@@ -1,6 +1,6 @@
 [project]
 name = "file-handler-library"
-version = "2.0.0"
+version = "2.1.1"
 description = "Python package to handle file operations."
 authors = [{ name = "Tejas", email = "tejas@ipedis.com" }]
 readme = "README.md"

@@ -8,12 +8,12 @@ Requires Python >= 3.11. Add it as a git dependency of your project:
 
 ```toml
 # Poetry
-file-handler-library = {git = "git@github.com:ipedis/file-handler-library.git", rev = "v2.0.0"}
+file-handler-library = {git = "git@github.com:ipedis/file-handler-library.git", rev = "v2.1.1"}
 ```
 
 ```bash
 # uv
-uv add "file-handler-library @ git+ssh://git@github.com/ipedis/file-handler-library.git@v2.0.0"
+uv add "file-handler-library @ git+ssh://git@github.com/ipedis/file-handler-library.git@v2.1.1"
 ```
 
 ## Setup
@@ -68,6 +68,7 @@ uv run pip-audit         # check dependencies for known vulnerabilities
 - `ScalewayAdapter.get_file` downloads to a new temporary file and returns its path (the caller deletes it). It used to download into the current directory under the object key and return `None`. It raises `FileNotFoundException` when the object does not exist.
 - `ScalewayAdapter.is_exist` and `get_file` no longer list or create buckets. Only `create_file` creates a missing bucket, via `head_bucket` instead of `list_buckets`.
 - `create_file` accepts a binary stream on S3 too (`upload_fileobj`).
+- `create_file` accepts a source path as `str` or `os.PathLike` (e.g. `pathlib.Path`), as in v1, or a binary stream. v2.0.0 and v2.1.0 only treated `str` as a path and failed on a `Path` (`Fileobj must implement read` on S3); fixed in v2.1.1.
 - `STORAGE_URL` and `STORAGE_REGION` are optional.
 - The library no longer installs `pytest`, `pytest-env`, `poetry-audit-plugin`, `filelock`, `itsdangerous` or `xattr`. If a project used one of them, it must declare it itself.
 

@@ -27,11 +27,11 @@ class ScalewayAdapter(FileHandlerAbstract):
         except (NoCredentialsError, PartialCredentialsError) as e:
             raise Exception("Scaleway credentials are invalid. Please check and try again.") from e
 
-    def create_file(self, container_name: str, file: BinaryIO | str, filename: str, is_public: bool = False):
+    def create_file(self, container_name: str, file: BinaryIO | str | os.PathLike, filename: str, is_public: bool = False):
         self.__ensure_container(container_name)
         extra_args = {'ACL': 'public-read'} if is_public else None
-        if isinstance(file, str):
-            self.storage.upload_file(file, container_name, filename, ExtraArgs=extra_args)
+        if isinstance(file, (str, os.PathLike)):
+            self.storage.upload_file(os.fspath(file), container_name, filename, ExtraArgs=extra_args)
         else:
             self.storage.upload_fileobj(file, container_name, filename, ExtraArgs=extra_args)
         return True
